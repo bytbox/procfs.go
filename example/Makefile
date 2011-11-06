@@ -1,6 +1,6 @@
 include ${GOROOT}/src/Make.inc
 
-TARG = demo
+TARG = example
 GOFILES = main.go
 
 include ${GOROOT}/src/Make.cmd

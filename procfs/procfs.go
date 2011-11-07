@@ -25,11 +25,16 @@ type Getter interface {
 type ProcFS struct {
 	Processes map[string]*Process
 	Self      string
+
+	Uptime    int
+	Idletime  int
 }
 
 const (
 	PROCFS_PROCESSES = "Processes"
 	PROCFS_SELF = "Self"
+	PROCFS_UPTIME = "Uptime"
+	PROCFS_IDLETIME = "Idletime"
 )
 
 func (pfs *ProcFS) Fill() {
@@ -38,6 +43,9 @@ func (pfs *ProcFS) Fill() {
 		p.Fill()
 	}
 	pfs.Get(PROCFS_SELF)
+
+	pfs.Get(PROCFS_UPTIME)
+	pfs.Get(PROCFS_IDLETIME)
 }
 
 func (pfs *ProcFS) List(k string) {
@@ -64,6 +72,7 @@ func (pfs *ProcFS) List(k string) {
 }
 
 func (pfs *ProcFS) Get(k string) {
+	var uf = path.Join(procfsdir, "uptime")
 	switch k {
 	case PROCFS_SELF:
 		var selfdir = path.Join(procfsdir, "self")
@@ -72,6 +81,22 @@ func (pfs *ProcFS) Get(k string) {
 		}
 		fi, _ := os.Readlink(selfdir)
 		pfs.Self = fi
+	case PROCFS_UPTIME:
+		str, err := ioutil.ReadFile(uf)
+		if err == nil {
+			ss := strings.Split(string(str), " ")
+			if len(ss) >= 2 {
+				pfs.Uptime, _ = strconv.Atoi(ss[0])
+			}
+		}
+	case PROCFS_IDLETIME:
+		str, err := ioutil.ReadFile(uf)
+		if err == nil {
+			ss := strings.Split(string(str), " ")
+			if len(ss) >= 2 {
+				pfs.Idletime, _ = strconv.Atoi(ss[1])
+			}
+		}
 	}
 }
 

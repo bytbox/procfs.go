@@ -84,7 +84,7 @@ func (pfs *ProcFS) Get(k string) {
 	case PROCFS_UPTIME:
 		str, err := ioutil.ReadFile(uf)
 		if err == nil {
-			ss := strings.Split(string(str), " ")
+			ss := strings.Fields(string(str))
 			if len(ss) >= 2 {
 				it, _ := strconv.Atof64(ss[0])
 				pfs.Uptime = int(it)
@@ -93,7 +93,7 @@ func (pfs *ProcFS) Get(k string) {
 	case PROCFS_IDLETIME:
 		str, err := ioutil.ReadFile(uf)
 		if err == nil {
-			ss := strings.Split(string(str), " ")
+			ss := strings.Fields(string(str))
 			if len(ss) >= 2 {
 				it, _ := strconv.Atof64(ss[1])
 				pfs.Idletime = int(it)

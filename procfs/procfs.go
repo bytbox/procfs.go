@@ -129,7 +129,6 @@ func (p *Process) List(k string) {
 
 func (p *Process) Get(k string) {
 	pdir := path.Join(procfsdir, strconv.Itoa(p.PID))
-	println(pdir)
 	switch k {
 	case PROCFS_PROC_AUXV:
 		p.Auxv, _ = ioutil.ReadFile(path.Join(pdir, "auxv"))
@@ -138,7 +137,6 @@ func (p *Process) Get(k string) {
 		if err == nil {
 			p.Cmdline = splitNull(cl)
 		}
-		println(err.Error())
 	case PROCFS_PROC_CWD:
 		p.Cwd, _ = os.Readlink(path.Join(pdir, "cwd"))
 	case PROCFS_PROC_ENVIRON:

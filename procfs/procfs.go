@@ -33,6 +33,9 @@ const (
 
 func (pfs *ProcFS) Fill() {
 	pfs.List(PROCFS_PROCESSES)
+	for _, p := range pfs.Processes {
+		p.Fill()
+	}
 	pfs.Get(PROCFS_SELF)
 }
 

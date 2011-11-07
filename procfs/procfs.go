@@ -153,6 +153,8 @@ func (p *Process) Get(k string) {
 		}
 	case PROCFS_PROC_EXE:
 		p.Exe, _ = os.Readlink(path.Join(pdir, "exe"))
+	case PROCFS_PROC_ROOT:
+		p.Root, _ = os.Readlink(path.Join(pdir, "root"))
 	}
 }
 

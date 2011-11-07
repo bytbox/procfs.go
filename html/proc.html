@@ -1,9 +1,24 @@
 <html>
 <head>
 <title>ProcD Client Demo</title>
+
+<script src="jsonrpc.js" language="javascript" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+
+var jsonService = new JsonRpc.ServiceProxy("/_goRPC_",
+	{ asynchronous: false
+	, methods: ['server.Get'] });
+
+function submit() {
+	alert(jsonService.server.Get(""));
+}
+</script>
 </head>
 
 <body>
+<h1>ProcD Client Demo</h1>
+
+<span style="border: 1px solid black; cursor: pointer" onclick="submit()">Get Uptime</span>
 
 </body>
 </html>

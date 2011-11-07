@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"http"
 	"log"
 	"net"
 	"rpc"
@@ -15,13 +16,15 @@ import (
 var pfs *procfs.ProcFS
 var pfsMutex sync.Mutex
 var interval = flag.Int64("interval", 10, "update interval")
-var port = flag.String("port", ":16070", "JSON-RPC service port")
+var jsonrpc_port = flag.String("jsonrpc", ":16070", "JSON-RPC service port")
+var http_port = flag.String("http", ":6070", "HTTP service port")
 
 func main() {
 	flag.Parse()
 
 	go updater()
-	go serve()
+	go serveRPC()
+	go serveHTTP()
 
 /*
 	var pfs procfs.ProcFS
@@ -61,11 +64,11 @@ func (ProcFSServer) Get(req string, reply *procfs.ProcFS) error {
 }
 
 // Runs the JSON-RPC server
-func serve() {
+func serveRPC() {
 	server := ProcFSServer{}
 	rpc.Register(server)
 
-	l, err := net.Listen("tcp", *port)
+	l, err := net.Listen("tcp", *jsonrpc_port)
 	if err != nil {
 		log.Fatal("ERR: ", err)
 	}
@@ -80,4 +83,8 @@ func serve() {
 		log.Print("Serving ", c.RemoteAddr())
 		go jsonrpc.ServeConn(c)
 	}
+}
+
+func serveHTTP() {
+
 }

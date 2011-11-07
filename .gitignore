@@ -8,3 +8,4 @@ _test
 _testmain.go
 *.out
 procd
+procc

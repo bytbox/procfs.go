@@ -22,8 +22,8 @@ type Getter interface {
 }
 
 type ProcFS struct {
-	Processes map[int]*Process
-	Self      int
+	Processes map[string]*Process
+	Self      string
 }
 
 const (
@@ -42,7 +42,7 @@ func (pfs *ProcFS) List(k string) {
 		if !exists(procfsdir) {
 			return
 		}
-		pfs.Processes = make(map[int]*Process)
+		pfs.Processes = make(map[string]*Process)
 		ds, err := ioutil.ReadDir(procfsdir)
 		if err != nil {
 			return
@@ -53,7 +53,7 @@ func (pfs *ProcFS) List(k string) {
 			id, err := strconv.Atoi(n)
 			if isNumeric(n) && err != nil {
 				proc := Process{PID: id}
-				pfs.Processes[id] = &proc
+				pfs.Processes[n] = &proc
 			}
 		}
 	}
@@ -67,7 +67,7 @@ func (pfs *ProcFS) Get(k string) {
 			return
 		}
 		fi, _ := os.Readlink(selfdir)
-		pfs.Self, _ = strconv.Atoi(fi)
+		pfs.Self = fi
 	}
 }
 

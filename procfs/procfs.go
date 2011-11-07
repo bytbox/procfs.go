@@ -51,7 +51,7 @@ func (pfs *ProcFS) List(k string) {
 		for _, d := range ds {
 			n := d.Name
 			id, err := strconv.Atoi(n)
-			if isNumeric(n) && err != nil {
+			if isNumeric(n) && err == nil {
 				proc := Process{PID: id}
 				pfs.Processes[n] = &proc
 			}

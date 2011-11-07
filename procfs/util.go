@@ -22,7 +22,7 @@ func exists(pathname string) bool {
 }
 
 func isNumeric(s string) bool {
-	a, _ := regexp.Match("[0-9]+", []byte(s))
+	a, _ := regexp.Match("^[0-9]+$", []byte(s))
 	return a
 }
 

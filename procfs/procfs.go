@@ -42,6 +42,7 @@ func (pfs *ProcFS) List(k string) {
 		if !exists(procfsdir) {
 			return
 		}
+		pfs.Processes = make(map[int]*Process)
 		ds, err := ioutil.ReadDir(procfsdir)
 		if err != nil {
 			return

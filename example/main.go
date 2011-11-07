@@ -5,6 +5,8 @@ import (
 )
 
 func main() {
-
+	var pfs procfs.ProcFS
+	pfs.Fill()
+	println(pfs.Self)
 }
 

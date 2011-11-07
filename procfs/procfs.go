@@ -78,10 +78,10 @@ type Process struct {
 	Cwd     string
 	Environ map[string]string
 	Exe     string
-	Fds     map[int]*Fd
+	Fds     map[string]*Fd
 	Root    string
 	Status  map[string]string
-	Threads map[int]*Thread
+	Threads map[string]*Thread
 }
 // TODO limits, maps, mem, mountinfo, mounts, mountstats, ns, smaps, stat
 

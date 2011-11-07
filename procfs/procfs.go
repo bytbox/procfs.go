@@ -157,6 +157,18 @@ func (p *Process) Get(k string) {
 		p.Exe, _ = os.Readlink(path.Join(pdir, "exe"))
 	case PROCFS_PROC_ROOT:
 		p.Root, _ = os.Readlink(path.Join(pdir, "root"))
+	case PROCFS_PROC_STATUS:
+		statLines, err := ioutil.ReadFile(path.Join(pdir, "status"))
+		if err == nil {
+			p.Status = make(map[string]string)
+			statS := strings.Split(string(statLines), "\n")
+			for _, s := range statS {
+				ss := strings.SplitN(s, ":", 2)
+				if len(ss) == 2 {
+					p.Status[ss[0]] = strings.TrimSpace(ss[1])
+				}
+			}
+		}
 	}
 }
 

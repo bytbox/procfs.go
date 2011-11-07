@@ -10,7 +10,7 @@ func splitNull(b []byte) []string {
 	null := []byte{0}
 	rb := bytes.Split(b, null)
 	r := []string{}
-	for _, x := range rb {
+	for _, x := range rb[:len(rb)-1] {
 		r = append(r, string(x))
 	}
 	return r

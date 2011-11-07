@@ -151,6 +151,8 @@ func (p *Process) Get(k string) {
 				p.Environ[ss[0]] = ss[1]
 			}
 		}
+	case PROCFS_PROC_EXE:
+		p.Exe, _ = os.Readlink(path.Join(pdir, "exe"))
 	}
 }
 

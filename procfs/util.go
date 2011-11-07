@@ -1,9 +1,20 @@
 package procfs
 
 import (
+	"bytes"
 	"os"
 	"regexp"
 )
+
+func splitNull(b []byte) []string {
+	null := []byte{0}
+	rb := bytes.Split(b, null)
+	r := []string{}
+	for _, x := range rb {
+		r = append(r, string(x))
+	}
+	return r
+}
 
 func exists(pathname string) bool {
 	_, err := os.Stat(pathname)

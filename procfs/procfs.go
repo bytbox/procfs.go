@@ -83,6 +83,7 @@ type Process struct {
 	Status  map[string]string
 	Threads map[int]*Thread
 }
+// TODO limits, maps, mem, mountinfo, mounts, mountstats, ns, smaps, stat
 
 const (
 	PROCFS_PROC_AUXV = "Process.Auxv"
@@ -124,9 +125,20 @@ func (p *Process) List(k string) {
 }
 
 func (p *Process) Get(k string) {
-
+	pdir := path.Join(procfsdir, strconv.Itoa(p.PID))
+	switch k {
+	case PROCFS_PROC_AUXV:
+		p.Auxv, _ = ioutil.ReadFile(path.Join(pdir, "auxv"))
+	case PROCFS_PROC_CMDLINE:
+		cl, err := ioutil.ReadFile(path.Join(pdir, "cmdline"))
+		if err == nil {
+			p.Cmdline = splitNull(cl)
+		}
+	case PROCFS_PROC_CWD:
+		p.Cwd, _ = os.Readlink(path.Join(pdir, "cwd"))
+	case PROCFS_PROC_ENVIRON:
+	}
 }
-// TODO limits, maps, mem, mountinfo, mounts, mountstats, ns, smaps, stat
 
 type Fd struct {
 	Path  string

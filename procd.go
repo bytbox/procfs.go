@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"http"
+	"io"
+	"io/ioutil"
 	"log"
-	"net"
 	"rpc"
 	"rpc/jsonrpc"
 	"sync"
@@ -16,25 +17,13 @@ import (
 var pfs *procfs.ProcFS
 var pfsMutex sync.Mutex
 var interval = flag.Int64("interval", 10, "update interval")
-var jsonrpc_port = flag.String("jsonrpc", ":16070", "JSON-RPC service port")
 var http_port = flag.String("http", ":6070", "HTTP service port")
 
 func main() {
 	flag.Parse()
 
 	go updater()
-	go serveRPC()
 	go serveHTTP()
-
-/*
-	var pfs procfs.ProcFS
-	pfs.Fill()
-	str, err := json.MarshalIndent(pfs, "", "  ")
-	if err != nil {
-		log.Fatal("ERR: ", err)
-	}
-	println(string(str))
-*/
 
 	<-make(chan int)
 }
@@ -63,28 +52,46 @@ func (ProcFSServer) Get(req string, reply *procfs.ProcFS) error {
 	return nil
 }
 
-// Runs the JSON-RPC server
-func serveRPC() {
-	server := ProcFSServer{}
-	rpc.Register(server)
-
-	l, err := net.Listen("tcp", *jsonrpc_port)
-	if err != nil {
-		log.Fatal("ERR: ", err)
-	}
-
-	for {
-		c, err := l.Accept()
-		if err != nil {
-			log.Print("WARN: ", err)
-			continue
-		}
-
-		log.Print("Serving ", c.RemoteAddr())
-		go jsonrpc.ServeConn(c)
-	}
-}
-
 func serveHTTP() {
+	server := ProcFSServer{}
+	rpc.RegisterName("ProcFS", server)
+	http.HandleFunc("/", HTMLServer)
+	http.HandleFunc("/jsonrpc.js", JSServer)
+	http.HandleFunc("/_goRPC_", RPCServer)
 
+	err := http.ListenAndServe(*http_port, http.DefaultServeMux)
+	if err != nil {
+		log.Print("ERR: ", err)
+	}
 }
+
+func HTMLServer(w http.ResponseWriter, req *http.Request) {
+	c, err := ioutil.ReadFile("html/proc.html")
+	if err != nil {
+		log.Fatal("ERR: html/index.html not openable")
+		return
+	}
+	w.Write(c)
+}
+
+func JSServer(w http.ResponseWriter, req *http.Request) {
+	c, err := ioutil.ReadFile("html/jsonrpc.js")
+	if err != nil {
+		log.Fatal("ERR: html/index.html not openable")
+		return
+	}
+	w.Write(c)
+}
+
+func RPCServer(w http.ResponseWriter, req *http.Request) {
+	h, _, err := w.(http.Hijacker).Hijack()
+	if err != nil {
+		log.Print("ERR: ", err)
+	}
+	connected := "200 Connected to JSON-RPC"
+	io.WriteString(h, "HTTP/1.0 "+connected+"\n\n")
+	codec := jsonrpc.NewServerCodec(h)
+	rpc.ServeRequest(codec)
+	h.Close()
+}
+

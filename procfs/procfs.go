@@ -1,5 +1,14 @@
 package procfs
 
+import (
+	"io/ioutil"
+	"os"
+	"path"
+	"strconv"
+)
+
+const procfsdir = "/proc"
+
 type Filler interface {
 	Fill()
 }
@@ -30,16 +39,39 @@ func (pfs *ProcFS) Fill() {
 func (pfs *ProcFS) List(k string) {
 	switch k {
 	case PROCFS_PROCESSES:
+		if !exists(procfsdir) {
+			return
+		}
+		ds, err := ioutil.ReadDir(procfsdir)
+		if err != nil {
+			return
+		}
+		// get all numeric entries
+		for _, d := range ds {
+			n := d.Name
+			id, err := strconv.Atoi(n)
+			if isNumeric(n) && err != nil {
+				proc := Process{PID: id}
+				pfs.Processes[id] = &proc
+			}
+		}
 	}
 }
 
 func (pfs *ProcFS) Get(k string) {
 	switch k {
 	case PROCFS_SELF:
+		var selfdir = path.Join(procfsdir, "self")
+		if !exists(selfdir) {
+			return
+		}
+		fi, _ := os.Stat(selfdir)
+		pfs.Self, _ = strconv.Atoi(fi.Name)
 	}
 }
 
 type Process struct {
+	PID     int
 	Auxv    []byte
 	Cmdline []string
 	Cwd     string

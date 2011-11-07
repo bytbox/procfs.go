@@ -1,7 +1,7 @@
 include ${GOROOT}/src/Make.inc
 
 TARG = procfs
-GOFILES = procfs.go
+GOFILES = procfs.go util.go
 
 include ${GOROOT}/src/Make.pkg
 

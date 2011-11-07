@@ -48,7 +48,7 @@ func updater() {
 type ProcFSServer struct {}
 
 func (ProcFSServer) Get(req string, reply *procfs.ProcFS) error {
-	reply = pfs
+	*reply = *pfs
 	return nil
 }
 

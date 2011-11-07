@@ -86,7 +86,8 @@ func (pfs *ProcFS) Get(k string) {
 		if err == nil {
 			ss := strings.Split(string(str), " ")
 			if len(ss) >= 2 {
-				pfs.Uptime, _ = strconv.Atoi(ss[0])
+				it, _ := strconv.Atof64(ss[0])
+				pfs.Uptime = int(it)
 			}
 		}
 	case PROCFS_IDLETIME:
@@ -94,7 +95,8 @@ func (pfs *ProcFS) Get(k string) {
 		if err == nil {
 			ss := strings.Split(string(str), " ")
 			if len(ss) >= 2 {
-				pfs.Idletime, _ = strconv.Atoi(ss[1])
+				it, _ := strconv.Atof64(ss[1])
+				pfs.Idletime = int(it)
 			}
 		}
 	}

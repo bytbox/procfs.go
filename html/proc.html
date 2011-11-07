@@ -7,10 +7,10 @@
 
 var jsonService = new JsonRpc.ServiceProxy("/_goRPC_",
 	{ asynchronous: false
-	, methods: ['server.Get'] });
+	, methods: ['ProcFS.Get'] });
 
 function submit() {
-	alert(jsonService.server.Get(""));
+	alert(jsonService.ProcFS.Get(""));
 }
 </script>
 </head>

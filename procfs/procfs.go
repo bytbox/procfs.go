@@ -148,7 +148,9 @@ func (p *Process) Get(k string) {
 			for _, s := range envS {
 				// split on =
 				ss := strings.SplitN(s, "=", 2)
-				p.Environ[ss[0]] = ss[1]
+				if len(ss) == 2 {
+					p.Environ[ss[0]] = ss[1]
+				}
 			}
 		}
 	case PROCFS_PROC_EXE:

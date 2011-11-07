@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 )
 
 const procfsdir = "/proc"
@@ -140,6 +141,16 @@ func (p *Process) Get(k string) {
 	case PROCFS_PROC_CWD:
 		p.Cwd, _ = os.Readlink(path.Join(pdir, "cwd"))
 	case PROCFS_PROC_ENVIRON:
+		envB, err := ioutil.ReadFile(path.Join(pdir, "environ"))
+		if err == nil {
+			p.Environ = make(map[string]string)
+			envS := splitNull(envB)
+			for _, s := range envS {
+				// split on =
+				ss := strings.SplitN(s, "=", 2)
+				p.Environ[ss[0]] = ss[1]
+			}
+		}
 	}
 }
 

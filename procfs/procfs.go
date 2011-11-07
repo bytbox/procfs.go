@@ -66,9 +66,8 @@ func (pfs *ProcFS) Get(k string) {
 		if !exists(selfdir) {
 			return
 		}
-		fi, _ := os.Stat(selfdir)
-		println(fi.Name)
-		pfs.Self, _ = strconv.Atoi(fi.Name)
+		fi, _ := os.Readlink(selfdir)
+		pfs.Self, _ = strconv.Atoi(fi)
 	}
 }
 

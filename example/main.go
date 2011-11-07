@@ -9,4 +9,3 @@ func main() {
 	pfs.Fill()
 	println(pfs.Self)
 }
-

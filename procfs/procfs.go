@@ -67,6 +67,7 @@ func (pfs *ProcFS) Get(k string) {
 			return
 		}
 		fi, _ := os.Stat(selfdir)
+		println(fi.Name)
 		pfs.Self, _ = strconv.Atoi(fi.Name)
 	}
 }

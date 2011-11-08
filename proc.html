@@ -5,6 +5,10 @@
 <script language="javascript" type="text/javascript">
 
 function submit() {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/rpc", false);
+	xhr.send('{"method": "ProcFS.Get", "id": 10, "params": [""]}');
+	alert(xhr.responseText);
 }
 </script>
 </head>

@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"rpc"
 	"rpc/jsonrpc"
 	"sync"
@@ -73,13 +74,33 @@ func HTMLServer(w http.ResponseWriter, req *http.Request) {
 	w.Write(c)
 }
 
+type combo struct{
+	a net.Conn
+	b io.ReadWriter
+}
+
+func (c combo) Close() error {
+	return c.a.Close()
+}
+
+func (c combo) Read(b []byte) (int, error) {
+	return c.b.Read(b)
+}
+
+func (c combo) Write(b []byte) (int, error) {
+	return c.a.Write(b)
+}
+
 func RPCServer(w http.ResponseWriter, req *http.Request) {
-	h, _, err := w.(http.Hijacker).Hijack()
+	h, buf, err := w.(http.Hijacker).Hijack()
 	if err != nil {
 		log.Print("ERR: ", err)
 	}
 	connected := "200 Connected to JSON-RPC"
 	io.WriteString(h, "HTTP/1.0 "+connected+"\n\n")
-	jsonrpc.ServeConn(h)
+	log.Print("Serving")
+	codec := jsonrpc.NewServerCodec(combo{h, buf})
+	rpc.ServeRequest(codec)
+	h.Close()
 }
 

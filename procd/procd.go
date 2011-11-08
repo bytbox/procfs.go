@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
-	"http"
 	"io"
 	"io/ioutil"
 	"log"
 	"net"
-	"rpc"
-	"rpc/jsonrpc"
+	"net/http"
+	"net/rpc"
+	"net/rpc/jsonrpc"
 	"sync"
 	"time"
 

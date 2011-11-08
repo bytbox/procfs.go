@@ -45,6 +45,9 @@ func getMounts(f string) []Mount {
 		lines := strings.Split(string(cont), "\n")
 		for _, l := range lines {
 			fs := strings.Fields(l)
+			if len(fs) < 4 {
+				continue
+			}
 			optStr := fs[3]
 			opts := (strings.Split(optStr, ","))
 			m := Mount{

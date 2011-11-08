@@ -1,0 +1,22 @@
+<html>
+<head>
+<title>ProcD Client Demo</title>
+
+<script language="javascript" type="text/javascript">
+
+function submit() {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/rpc", false);
+	xhr.send('{"method": "ProcFS.Get", "id": 10, "params": [""]}');
+	alert(xhr.responseText);
+}
+</script>
+</head>
+
+<body>
+<h1>ProcD Client Demo</h1>
+
+<span style="border: 1px solid black; cursor: pointer" onclick="submit()">Get Uptime</span>
+
+</body>
+</html>

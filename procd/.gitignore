@@ -1,0 +1,11 @@
+*.swp
+*.6
+*.5
+*.8
+*.o
+_obj
+_test
+_testmain.go
+*.out
+procd
+procc

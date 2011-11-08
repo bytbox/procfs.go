@@ -25,9 +25,38 @@ type Getter interface {
 type ProcFS struct {
 	Processes map[string]*Process
 	Self      string
+	Mounts    []Mount
 
 	Uptime    int
 	Idletime  int
+}
+
+type Mount struct {
+	Device     string
+	MountPoint string
+	Type       string
+	Options    []string
+}
+
+func getMounts(f string) []Mount {
+	var ms = []Mount{}
+	cont, err := ioutil.ReadFile(f)
+	if err == nil {
+		lines := strings.Split(string(cont), "\n")
+		for _, l := range lines {
+			fs := strings.Fields(l)
+			optStr := fs[3]
+			opts := (strings.Split(optStr, ","))
+			m := Mount{
+				Device: fs[0],
+				MountPoint: fs[1],
+				Type: fs[2],
+				Options: opts,
+			}
+			ms = append(ms, m)
+		}
+	}
+	return ms
 }
 
 const (
@@ -35,6 +64,7 @@ const (
 	PROCFS_SELF = "Self"
 	PROCFS_UPTIME = "Uptime"
 	PROCFS_IDLETIME = "Idletime"
+	PROCFS_MOUNTS = "Mounts"
 )
 
 func (pfs *ProcFS) Fill() {
@@ -46,6 +76,7 @@ func (pfs *ProcFS) Fill() {
 
 	pfs.Get(PROCFS_UPTIME)
 	pfs.Get(PROCFS_IDLETIME)
+	pfs.Get(PROCFS_MOUNTS)
 }
 
 func (pfs *ProcFS) List(k string) {
@@ -99,6 +130,8 @@ func (pfs *ProcFS) Get(k string) {
 				pfs.Idletime = int(it)
 			}
 		}
+	case PROCFS_MOUNTS:
+		pfs.Mounts = getMounts(path.Join(procfsdir, "mounts"))
 	}
 }
 
@@ -113,6 +146,7 @@ type Process struct {
 	Root    string
 	Status  map[string]string
 	Threads map[string]*Thread
+	Mounts  []Mount
 }
 // TODO limits, maps, mem, mountinfo, mounts, mountstats, ns, smaps, stat
 
@@ -124,6 +158,7 @@ const (
 	PROCFS_PROC_EXE = "Process.Exe"
 	PROCFS_PROC_ROOT = "Process.Root"
 	PROCFS_PROC_STATUS = "Process.Status"
+	PROCFS_PROC_MOUNTS = "Process.Mounts"
 
 	PROCFS_PROC_FDS = "Process.Fds"
 	PROCFS_PROC_THREADS = "Process.Threads"
@@ -137,6 +172,7 @@ func (p *Process) Fill() {
 	p.Get(PROCFS_PROC_EXE)
 	p.Get(PROCFS_PROC_ROOT)
 	p.Get(PROCFS_PROC_STATUS)
+	p.Get(PROCFS_PROC_MOUNTS)
 
 	// Fds
 	p.List(PROCFS_PROC_FDS)
@@ -196,6 +232,8 @@ func (p *Process) Get(k string) {
 				}
 			}
 		}
+	case PROCFS_PROC_MOUNTS:
+		p.Mounts = getMounts(path.Join(pdir, "mounts"))
 	}
 }
 

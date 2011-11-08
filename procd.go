@@ -65,7 +65,7 @@ func serveHTTP() {
 }
 
 func HTMLServer(w http.ResponseWriter, req *http.Request) {
-	c, err := ioutil.ReadFile("html/proc.html")
+	c, err := ioutil.ReadFile("proc.html")
 	if err != nil {
 		log.Fatal("ERR: html/index.html not openable")
 		return

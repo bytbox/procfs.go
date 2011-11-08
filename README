@@ -1,0 +1,21 @@
+Procfs.go allows you to interface (read-only) with procfs from go programs. The
+simplest usage is to create a ProcFS object and call the Fill() method:
+
+  var pfs procfs.ProcFS
+  pfs.Fill()
+
+This can be somewhat slow (50ms on a 2GHz processor), so if you only want a
+certain part of the structure, you can ask just for that
+
+  pfs.Get(PROCFS_MOUNTS) // get the list of mounts in pfs.Mounts
+  pfs.List(PROCFS_PROCESSES) // fill in stub processes in pfs.Processes
+  pfs.Get(PROCFS_SELF) // find our process id
+  pfs.Processes[pfs.Self].Fill() // fill in all information for our own process
+
+Procfs.go is goinstallable with
+
+  goinstall github.com/bytbox/procfs.go/procfs
+
+A jsonrpc daemon is also provided in procd, providing a network frontend to
+procfs.
+

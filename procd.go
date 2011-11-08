@@ -56,8 +56,7 @@ func serveHTTP() {
 	server := ProcFSServer{}
 	rpc.RegisterName("ProcFS", server)
 	http.HandleFunc("/", HTMLServer)
-	http.HandleFunc("/jsonrpc.js", JSServer)
-	http.HandleFunc("/_goRPC_", RPCServer)
+	http.HandleFunc("/rpc", RPCServer)
 
 	err := http.ListenAndServe(*http_port, http.DefaultServeMux)
 	if err != nil {
@@ -74,15 +73,6 @@ func HTMLServer(w http.ResponseWriter, req *http.Request) {
 	w.Write(c)
 }
 
-func JSServer(w http.ResponseWriter, req *http.Request) {
-	c, err := ioutil.ReadFile("html/jsonrpc.js")
-	if err != nil {
-		log.Fatal("ERR: html/index.html not openable")
-		return
-	}
-	w.Write(c)
-}
-
 func RPCServer(w http.ResponseWriter, req *http.Request) {
 	h, _, err := w.(http.Hijacker).Hijack()
 	if err != nil {
@@ -90,8 +80,6 @@ func RPCServer(w http.ResponseWriter, req *http.Request) {
 	}
 	connected := "200 Connected to JSON-RPC"
 	io.WriteString(h, "HTTP/1.0 "+connected+"\n\n")
-	codec := jsonrpc.NewServerCodec(h)
-	rpc.ServeRequest(codec)
-	h.Close()
+	jsonrpc.ServeConn(h)
 }
 

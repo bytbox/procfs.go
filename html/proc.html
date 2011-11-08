@@ -2,15 +2,9 @@
 <head>
 <title>ProcD Client Demo</title>
 
-<script src="jsonrpc.js" language="javascript" type="text/javascript"></script>
 <script language="javascript" type="text/javascript">
 
-var jsonService = new JsonRpc.ServiceProxy("/_goRPC_",
-	{ asynchronous: false
-	, methods: ['ProcFS.Get'] });
-
 function submit() {
-	alert(jsonService.ProcFS.Get(""));
 }
 </script>
 </head>

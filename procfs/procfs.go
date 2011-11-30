@@ -95,7 +95,7 @@ func (pfs *ProcFS) List(k string) {
 		}
 		// get all numeric entries
 		for _, d := range ds {
-			n := d.Name
+			n := d.Name()
 			id, err := strconv.Atoi(n)
 			if isNumeric(n) && err == nil {
 				proc := Process{PID: id}

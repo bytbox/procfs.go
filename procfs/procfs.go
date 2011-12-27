@@ -27,8 +27,8 @@ type ProcFS struct {
 	Self      string
 	Mounts    []Mount
 
-	Uptime    int
-	Idletime  int
+	Uptime   int
+	Idletime int
 }
 
 type Mount struct {
@@ -51,10 +51,10 @@ func getMounts(f string) []Mount {
 			optStr := fs[3]
 			opts := (strings.Split(optStr, ","))
 			m := Mount{
-				Device: fs[0],
+				Device:     fs[0],
 				MountPoint: fs[1],
-				Type: fs[2],
-				Options: opts,
+				Type:       fs[2],
+				Options:    opts,
 			}
 			ms = append(ms, m)
 		}
@@ -64,10 +64,10 @@ func getMounts(f string) []Mount {
 
 const (
 	PROCFS_PROCESSES = "Processes"
-	PROCFS_SELF = "Self"
-	PROCFS_UPTIME = "Uptime"
-	PROCFS_IDLETIME = "Idletime"
-	PROCFS_MOUNTS = "Mounts"
+	PROCFS_SELF      = "Self"
+	PROCFS_UPTIME    = "Uptime"
+	PROCFS_IDLETIME  = "Idletime"
+	PROCFS_MOUNTS    = "Mounts"
 )
 
 func (pfs *ProcFS) Fill() {
@@ -120,7 +120,7 @@ func (pfs *ProcFS) Get(k string) {
 		if err == nil {
 			ss := strings.Fields(string(str))
 			if len(ss) >= 2 {
-				it, _ := strconv.Atof64(ss[0])
+				it, _ := strconv.ParseFloat(ss[0], 64)
 				pfs.Uptime = int(it)
 			}
 		}
@@ -129,7 +129,7 @@ func (pfs *ProcFS) Get(k string) {
 		if err == nil {
 			ss := strings.Fields(string(str))
 			if len(ss) >= 2 {
-				it, _ := strconv.Atof64(ss[1])
+				it, _ := strconv.ParseFloat(ss[1], 64)
 				pfs.Idletime = int(it)
 			}
 		}
@@ -151,19 +151,20 @@ type Process struct {
 	Threads map[string]*Thread
 	Mounts  []Mount
 }
+
 // TODO limits, maps, mem, mountinfo, mounts, mountstats, ns, smaps, stat
 
 const (
-	PROCFS_PROC_AUXV = "Process.Auxv"
+	PROCFS_PROC_AUXV    = "Process.Auxv"
 	PROCFS_PROC_CMDLINE = "Process.Cmdline"
-	PROCFS_PROC_CWD = "Process.Cwd"
+	PROCFS_PROC_CWD     = "Process.Cwd"
 	PROCFS_PROC_ENVIRON = "Process.Environ"
-	PROCFS_PROC_EXE = "Process.Exe"
-	PROCFS_PROC_ROOT = "Process.Root"
-	PROCFS_PROC_STATUS = "Process.Status"
-	PROCFS_PROC_MOUNTS = "Process.Mounts"
+	PROCFS_PROC_EXE     = "Process.Exe"
+	PROCFS_PROC_ROOT    = "Process.Root"
+	PROCFS_PROC_STATUS  = "Process.Status"
+	PROCFS_PROC_MOUNTS  = "Process.Mounts"
 
-	PROCFS_PROC_FDS = "Process.Fds"
+	PROCFS_PROC_FDS     = "Process.Fds"
 	PROCFS_PROC_THREADS = "Process.Threads"
 )
 
@@ -247,8 +248,8 @@ type Fd struct {
 }
 
 const (
-	PROCFS_PROC_FD_PATH = "Process.Fd.Path"
-	PROCFS_PROC_FD_POS = "Process.Fd.Pos"
+	PROCFS_PROC_FD_PATH  = "Process.Fd.Path"
+	PROCFS_PROC_FD_POS   = "Process.Fd.Pos"
 	PROCFS_PROC_FD_FLAGS = "Process.Fd.Flags"
 )
 

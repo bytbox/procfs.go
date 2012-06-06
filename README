@@ -1,3 +1,6 @@
+(Note: this code is unmaintained, and may not build with the latest version of
+go.)
+
 Procfs.go allows you to interface (read-only) with procfs from go programs. The
 simplest usage is to create a ProcFS object and call the Fill() method:
 
